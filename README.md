@@ -18,7 +18,7 @@ After compiling, load the `aadprt.cna` file into Cobalt Strike.
 4. Profit!
 
 ### Injecting Cookies into Browser
-This can be done manually on a per cookie basis, or automatically via [stealer.js](https://github.com/fkasler/cuddlephish/blob/main/stealer.js) from the [Cuddlephish](https://github.com/fkasler/cuddlephish). The BOF will output a JSON blob ,like `{"url":"https://login.microsoftonline.com","cookies":[...],"local_storage":[])`, which you can paste into a file and automatically inject into a chromium browser using 
+This can be done manually on a per cookie basis, or automatically via [stealer.js](https://github.com/fkasler/cuddlephish/blob/main/stealer.js) from the [Cuddlephish](https://github.com/fkasler/cuddlephish). The BOF will output a JSON blob, in the format `{"url":"https://login.microsoftonline.com","cookies":[...],"local_storage":[])`, which you can paste into a file and automatically inject into a chromium browser using 
 ```
 node .\stealer.js .\aadprt_cookies.json
 ```
