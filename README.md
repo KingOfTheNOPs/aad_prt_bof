@@ -17,6 +17,18 @@ After compiling, load the `aadprt.cna` file into Cobalt Strike.
 3. Use the token to authenticate in ROADrecon (or any other tool): `roadrecon auth --prt-cookie [TOKEN]`
 4. Profit!
 
+### Injecting Cookies into Browser
+This can be done manually on a per cookie basis, or automatically via [stealer.js](https://github.com/fkasler/cuddlephish/blob/main/stealer.js) from the [Cuddlephish](https://github.com/fkasler/cuddlephish). The BOF will output a JSON blob ,like `{"url":"https://login.microsoftonline.com","cookies":[...],"local_storage":[])`, which you can paste into a file and automatically inject into a chromium browser using 
+```
+node .\stealer.js .\aadprt_cookies.json
+```
+
+This requires installing [Node.js](https://nodejs.org/en/download) and stealer's dependecies
+```
+npm install puppeteer-extra
+npm install puppeteer-extra-plugin-stealth
+```
+
 ## References
 
 Heavily inspired by the awesome work and research of [Dirk-jan](https://twitter.com/_dirkjan) and [Lee](http://twitter.com/tifkin_).
