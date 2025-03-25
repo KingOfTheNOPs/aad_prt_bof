@@ -12,6 +12,11 @@ WINBASEAPI void __cdecl MSVCRT$free(void *_Memory);
 WINBASEAPI int __cdecl MSVCRT$vsnprintf(char * __restrict__ d,size_t n,const char * __restrict__ format,va_list arg);
 WINBASEAPI errno_t __cdecl MSVCRT$mbstowcs_s(size_t *pReturnValue, wchar_t * wcstr, size_t smt,const char *mbstr, size_t count);
 WINBASEAPI size_t __cdecl MSVCRT$strlen(const char *_Str);
+WINBASEAPI void* WINAPI MSVCRT$malloc(SIZE_T);
+WINBASEAPI void *__cdecl MSVCRT$realloc(void *_Memory, size_t _NewSize);
+WINBASEAPI wchar_t *__cdecl MSVCRT$wcscpy(wchar_t * __restrict__ _Dest, const wchar_t * __restrict__ _Source);
+WINBASEAPI int WINAPI MSVCRT$_snwprintf(wchar_t *buffer, size_t count, const wchar_t *format, ...);
+WINBASEAPI wchar_t *__cdecl MSVCRT$wcscat(wchar_t * __restrict__ _Dest,const wchar_t * __restrict__ _Source);
 
 WINBASEAPI int WINAPI KERNEL32$lstrlenW (LPCWSTR lpString);
 WINBASEAPI LPWSTR WINAPI KERNEL32$lstrcpynW (LPWSTR lpString1, LPCWSTR lpString2, int iMaxLength);
@@ -38,6 +43,11 @@ DECLSPEC_IMPORT HRESULT WINAPI COOKIE$GetCookieInfoForUri(LPCWSTR uri, DWORD *co
 #define MSVCRT$vsnprintf vsnprintf
 #define MSVCRT$mbstowcs_s mbstowcs_s
 #define MSVCRT$strlen strlen
+#define MSVCRT$malloc malloc
+#define MSVCRT$realloc realloc
+#define MSVCRT$wcscpy wcscpy
+#define MSVCRT$_snwprintf _snwprintf
+#define MSVCRT$wcscat wcscat
 
 #define Kernel32$WideCharToMultiByte  WideCharToMultiByte
 #define intAlloc(size) KERNEL32$HeapAlloc(KERNEL32$GetProcessHeap(), HEAP_ZERO_MEMORY, size)
