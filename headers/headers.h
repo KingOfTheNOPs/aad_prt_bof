@@ -17,6 +17,7 @@ WINBASEAPI void *__cdecl MSVCRT$realloc(void *_Memory, size_t _NewSize);
 WINBASEAPI wchar_t *__cdecl MSVCRT$wcscpy(wchar_t * __restrict__ _Dest, const wchar_t * __restrict__ _Source);
 WINBASEAPI int WINAPI MSVCRT$_snwprintf(wchar_t *buffer, size_t count, const wchar_t *format, ...);
 WINBASEAPI wchar_t *__cdecl MSVCRT$wcscat(wchar_t * __restrict__ _Dest,const wchar_t * __restrict__ _Source);
+WINBASEAPI wchar_t *__cdecl MSVCRT$wcschr(const wchar_t * _Str, wchar_t _Ch);
 
 WINBASEAPI int WINAPI KERNEL32$lstrlenW (LPCWSTR lpString);
 WINBASEAPI LPWSTR WINAPI KERNEL32$lstrcpynW (LPWSTR lpString1, LPCWSTR lpString2, int iMaxLength);

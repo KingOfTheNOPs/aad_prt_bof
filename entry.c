@@ -79,11 +79,10 @@ int requestaadprt(LPCWSTR nonce) {
 		internal_printf("Flags: %x\n", cookies[i].flags);
 		internal_printf("P3PHeader: %ls\n\n", cookies[i].p3pHeader);
 		
-		// truncate string to just the cookie value; other data appears to be static 60 chars
-		//   ; path=/; domain=login.microsoftonline.com; secure; httponly
-		size_t cookieValueLen = MSVCRT$wcslen(cookies[i].data);
-		if (cookieValueLen > 60) {
-			cookies[i].data[cookieValueLen - 60] = L'\0';
+		// copy every char up until the first semi-colon char
+		wchar_t* semicolonPos = MSVCRT$wcschr(cookies[i].data, L';');
+		if (semicolonPos != NULL) {
+			*semicolonPos = L'\0';
 		}
 
 		wchar_t* cookieJson = (wchar_t*)MSVCRT$malloc(2048 * sizeof(wchar_t));
